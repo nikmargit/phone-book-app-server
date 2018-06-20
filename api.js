@@ -36,6 +36,7 @@ db.serialize(function() {
 const express = require("express");
 const api = express();
 var jsonParser = bodyParser.json();
+api.use("/favicon.ico", express.static("images/favicon.ico"));
 //var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 // define API endpoints
