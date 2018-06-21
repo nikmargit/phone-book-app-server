@@ -2,7 +2,7 @@
 var sqlite3 = require("sqlite3").verbose();
 var bodyParser = require("body-parser");
 var db = new sqlite3.Database(":memory:"); // database will be stored in RAM only
-db.serialize(function() {
+db.serialize(function () {
     db.run(
         "CREATE TABLE IF NOT EXISTS phone_book (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, number TEXT)"
     );
@@ -34,8 +34,11 @@ db.serialize(function() {
 
 // define api object
 const express = require("express");
+var cors = require('cors')
 const api = express();
 var jsonParser = bodyParser.json();
+
+api.use(cors())
 api.use("/favicon.ico", express.static("images/favicon.ico"));
 //var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -43,7 +46,7 @@ api.use("/favicon.ico", express.static("images/favicon.ico"));
 
 // list all entries
 api.get("/", (req, res) => {
-    db.all("SELECT * FROM phone_book", function(err, row) {
+    db.all("SELECT * FROM phone_book", function (err, row) {
         if (!err) {
             res.json(row);
         } else {
@@ -74,7 +77,7 @@ api.get("/search/:lastname", (req, res) => {
 
     const sql = "SELECT * FROM phone_book WHERE last_name = ? COLLATE NOCASE";
 
-    db.all(sql, [lastName], function(err, row) {
+    db.all(sql, [lastName], function (err, row) {
         res.send(row);
     });
 });
@@ -82,14 +85,14 @@ api.get("/search/:lastname", (req, res) => {
 // delete all entries from the DB
 
 api.get("/delete", (req, res) => {
-    db.run("DELETE FROM phone_book", function(err) {
+    db.run("DELETE FROM phone_book", function (err) {
         res.send("deleted");
     });
 });
 
 // 404
 
-api.get("*", function(req, res) {
+api.get("*", function (req, res) {
     res.send("what???", 404);
 });
 
